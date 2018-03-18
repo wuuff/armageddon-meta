@@ -611,9 +611,9 @@ void stepDead(){
 
     if( gb.buttons.pressed(BUTTON_A) ){
       if( isHighscore(score) ){
-        char tmp_name[11];
+        char tmp_name[12];
         gb.getDefaultName(tmp_name);
-        gb.keyboard(tmp_name, 11);
+        gb.keyboard(tmp_name, 12);
         saveHighscore(score,tmp_name);
       }
       score = 0;

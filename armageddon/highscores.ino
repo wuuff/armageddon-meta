@@ -1,21 +1,14 @@
 #define NUM_HIGHSCORES 5
-#define NAME_SIZE 10
-#define ENTRY_SIZE 15
+#define NAME_SIZE 11
+#define ENTRY_SIZE 16
 
 uint32_t highscores[NUM_HIGHSCORES];
 char names[NUM_HIGHSCORES][NAME_SIZE+1];
 
 void loadHighscores(){
   for( uint8_t entry = 0; entry < NUM_HIGHSCORES; entry++ ){
-    for( uint8_t offset = 0; offset < ENTRY_SIZE; offset++ ){
-      if( offset < NAME_SIZE ){
-        //names[entry][offset] = EEPROM.read( ENTRY_SIZE * entry + offset );
-      }else{
-        uint8_t* addr = (uint8_t*) &highscores[entry];
-        addr+=offset-NAME_SIZE;
-        //*addr = EEPROM.read( ENTRY_SIZE * entry + offset );
-      }
-    }
+    gb.save.get(entry, names[entry], NAME_SIZE);
+    highscores[entry] = gb.save.get(NUM_HIGHSCORES+entry);
   }
 }
 
@@ -46,15 +39,8 @@ void saveHighscore(uint32_t score, char* who){
     }
   }
   for( uint8_t entry = 0; entry < NUM_HIGHSCORES; entry++ ){
-    for( uint8_t offset = 0; offset < ENTRY_SIZE; offset++ ){
-      if( offset < NAME_SIZE ){
-        //EEPROM.write( ENTRY_SIZE * entry + offset, names[entry][offset] );
-      }else{
-        uint8_t* addr = (uint8_t*) &highscores[entry];
-        addr+=offset-NAME_SIZE;
-        //EEPROM.write( ENTRY_SIZE * entry + offset, *addr );
-      }
-    }
+    gb.save.set(entry, names[entry], NAME_SIZE);
+    gb.save.set(NUM_HIGHSCORES+entry, highscores[entry]);
   }
 }
 
