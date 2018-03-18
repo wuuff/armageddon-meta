@@ -135,8 +135,8 @@ uint8_t lullCities[8] = {0,0,0,0,0,0,0,0};
 
 uint8_t cities[8] = {1,1,1,1,1,1,1,1}; //Whether the cities or launchers are alive
 
-uint8_t targetX = 84/2;
-uint8_t targetY = 48/2;
+uint8_t targetX = 80/2;
+uint8_t targetY = 64/2;
 uint8_t pammo[2] = {10,10};
 uint8_t pDests[MAX_PMISSILES][2] = {{100,100},{100,100},{100,100},{100,100},{100,100},{100,100},{100,100},{100,100},{100,100},{100,100}};
 float pMissiles[MAX_PMISSILES][3] = {{100,100,0},{100,100,0},{100,100,0},{100,100,0},{100,100,0},{100,100,0},{100,100,0},{100,100,0},{100,100,0},{100,100,0}};
@@ -191,7 +191,7 @@ void nextLull(){
 
 void drawScore(){
   gb.display.setColor(WHITE);
-  gb.display.cursorX = 84/2 - 4*3;
+  gb.display.cursorX = 80/2 - 4*3;
   gb.display.cursorY = 0;
 
   if( score < 100000 ){
@@ -231,16 +231,16 @@ void drawCities(){
   for(uint8_t i = 0; i < 8; i++){
       if( i == 2 || i == 5 ){
         if( cities[i] ){
-          gb.display.drawBitmap(i*10+2,56,launcher);
+          gb.display.drawBitmap(i*10+1,56,launcher);
         }else{
-          gb.display.drawBitmap(i*10+2,56,deadlauncher);
+          gb.display.drawBitmap(i*10+1,56,deadlauncher);
         }
       }else{
         if( cities[i] ){
           //alldead = 0;
-          gb.display.drawBitmap(i*10+2,56,city);
+          gb.display.drawBitmap(i*10+1,56,city);
         }else{
-          gb.display.drawBitmap(i*10+2,56,deadcity);
+          gb.display.drawBitmap(i*10+1,56,deadcity);
         }
       }
     }
@@ -257,12 +257,12 @@ void drawCities(){
 void drawAmmo(){
   gb.display.setColor(LIGHTBLUE);
   for( uint8_t i = 0; i < 2; i++ ){
-    uint8_t xcoord = i == 0 ? 25 : 55;
+    uint8_t xcoord = i == 0 ? 24 : 54;
     uint8_t ycoord = 63;
     if( cities[i*3+2] ){ //Is launcher alive?
       for( uint8_t j = 0; j < pammo[i]; j++ ){
         gb.display.drawPixel(xcoord,ycoord);
-        if( xcoord % 2 == 0 ){
+        if( xcoord % 2 != 0 ){
           xcoord--;
           ycoord--;
         }else{
@@ -280,9 +280,9 @@ void drawMissiles(){
     //Check for a valid destination without a current detonation
     if( pDests[i][0] <= 84 && pDetonations[i][0] > 84 ){
       if(pMissiles[i][2] == LAUNCHER_ONE){
-        gb.display.drawLine(25,56,pMissiles[i][0], pMissiles[i][1]);
+        gb.display.drawLine(24,56,pMissiles[i][0], pMissiles[i][1]);
       }else{
-        gb.display.drawLine(56,56,pMissiles[i][0], pMissiles[i][1]);
+        gb.display.drawLine(55,56,pMissiles[i][0], pMissiles[i][1]);
       }
     }
   }
@@ -348,14 +348,14 @@ void launchMissile(uint8_t launcher){
       if(launcher == LAUNCHER_ONE && cities[2] && pammo[0]){
         pDests[i][0] = targetX;
         pDests[i][1] = targetY;
-        pMissiles[i][0] = 25; //X-coord of left launcher
+        pMissiles[i][0] = 24; //X-coord of left launcher
         pMissiles[i][2] = LAUNCHER_ONE; //Launched from launcher one
         pammo[0]--;
         playSound(SOUND_PLAUNCH);
       }else if(launcher == LAUNCHER_TWO && cities[5] && pammo[1]){
         pDests[i][0] = targetX;
         pDests[i][1] = targetY;
-        pMissiles[i][0] = 56; //X-coord of right launcher
+        pMissiles[i][0] = 55; //X-coord of right launcher
         pMissiles[i][2] = LAUNCHER_TWO; //Launched from launcher two
         pammo[1]--;
         playSound(SOUND_PLAUNCH);
@@ -386,7 +386,7 @@ void tryLaunchEnemy(){
         if( eDests[i] > 84 ){
           etotal--;
           eDests[i] = random(8); //Target one of the 6 cities or 2 launch sites
-          eMissiles[i][0] = random(84); //Screen width
+          eMissiles[i][0] = random(80); //Screen width
           eMissiles[i][1] = 0; //Top of screen
           eMissiles[i][2] = eMissiles[i][0]; //Start and end are same
           eMissiles[i][3] = 0; //Top of screen
@@ -424,7 +424,7 @@ void stepMissiles(){
     //Check for a valid destination
     if( eDests[i] <= 84 ){
        //If enemy missile is close enough to the destination, detonate
-      if( abs( (eDests[i]*10+6) - eMissiles[i][2] ) < PSPEED && abs( 60 - eMissiles[i][3] ) < PSPEED ){
+      if( abs( (eDests[i]*10+5) - eMissiles[i][2] ) < PSPEED && abs( 60 - eMissiles[i][3] ) < PSPEED ){
         cities[eDests[i]] = 0; //Destroy city/launcher
         
         //If launcher, remove its ammo
@@ -439,7 +439,7 @@ void stepMissiles(){
         playSound(SOUND_DEAD);
       //Otherwise, keep moving towards destination
       }else{
-        float dir = atan2( 60-eMissiles[i][3], (eDests[i]*10+6)-eMissiles[i][2] );
+        float dir = atan2( 60-eMissiles[i][3], (eDests[i]*10+5)-eMissiles[i][2] );
         eMissiles[i][2] += espeed * cos(dir);
         eMissiles[i][3] += espeed * sin(dir);
       }
@@ -538,13 +538,13 @@ void stepGame(){
     targetX = targetX-TARGET_SPEED > 0 ? targetX-TARGET_SPEED : 0;
   }
   if( gb.buttons.repeat(BUTTON_RIGHT,1) ){
-    targetX = targetX+TARGET_SPEED < 84 ? targetX+TARGET_SPEED : 84;
+    targetX = targetX+TARGET_SPEED < 80 ? targetX+TARGET_SPEED : 80;
   }
   if( gb.buttons.repeat(BUTTON_UP,1) ){
     targetY = targetY-TARGET_SPEED > 0 ? targetY-TARGET_SPEED : 0;
   }
   if( gb.buttons.repeat(BUTTON_DOWN,1) ){
-    targetY = targetY+TARGET_SPEED < 48 ? targetY+TARGET_SPEED : 48;
+    targetY = targetY+TARGET_SPEED < 60 ? targetY+TARGET_SPEED : 60;
   }
 
   //Game logic
@@ -568,21 +568,21 @@ void stepGame(){
 void drawLull(){
   uint8_t cityCount = 0;
   gb.display.setColor(WHITE);
-  gb.display.cursorX = 84/2 - 4*6;
+  gb.display.cursorX = 80/2 - 4*6;
   gb.display.cursorY = 64/2 - 5*3;
   gb.display.print(F("BONUS POINTS"));
 
-  gb.display.cursorX = 84/2 - 4*8;
+  gb.display.cursorX = 80/2 - 4*8;
   gb.display.cursorY += 5*2;
   gb.display.print(lullMissiles);
 
   gb.display.setColor(LIGHTBLUE);
   for(uint8_t i = 0; i < lullMissiles; i++){
-    gb.display.drawPixel(84/2 - 4*6 + i*2,64/2 - 3);
+    gb.display.drawPixel(80/2 - 4*6 + i*2,64/2 - 3);
   }
 
   gb.display.setColor(WHITE);
-  gb.display.cursorX = 84/2 - 4*8;
+  gb.display.cursorX = 80/2 - 4*8;
   gb.display.cursorY += 5*2;
   for( uint8_t i = 0; i < 8; i++ ){
     if( lullCities[i] ) cityCount++;
@@ -591,7 +591,7 @@ void drawLull(){
 
   gb.display.setColor(YELLOW);
   for(uint8_t i = 0; i < cityCount; i++){
-    gb.display.drawBitmap(84/2 - 4*6 + i*9,64/2+2, city);
+    gb.display.drawBitmap(80/2 - 4*6 + i*9,64/2+2, city);
   }
 
   drawScore();
@@ -632,11 +632,12 @@ void stepLull(){
 }
 
 void stepDead(){
-  gb.display.setColor(WHITE);
-  gb.display.cursorX = 84/2 - 5*3;
-  gb.display.cursorY = 48/2 - 5;
+  gb.display.setColor(RED);
+  gb.display.cursorX = 80/2 - 5*3;
+  gb.display.cursorY = 64/2 - 5;
   gb.display.print(F("THE END"));
 
+  gb.display.setColor(YELLOW);
   if( mode == MODE_DEAD && counter%20 == 0 ){
     mode = MODE_POSTDEAD;
   }else if( mode == MODE_POSTDEAD ){
@@ -644,13 +645,13 @@ void stepDead(){
       flash ^= 255;
     }
     if( flash ){
-      gb.display.cursorX = 84/2 - 5*3;
-      gb.display.cursorY = 48 - 9;
+      gb.display.cursorX = 80/2 - 5*3;
+      gb.display.cursorY = 64 - 9;
       gb.display.print(F("PRESS \25"));
 
       if( isHighscore(score) ){
-        gb.display.cursorX = 84/2 - 5*5 - 2;
-        gb.display.cursorY = 48 - 15;
+        gb.display.cursorX = 80/2 - 5*5 - 2;
+        gb.display.cursorY = 64 - 15;
         gb.display.print(F("NEW HIGHSCORE"));
       }
     }
@@ -671,12 +672,13 @@ void stepDead(){
 void stepPregame(){
   drawHighscores();
 
+  gb.display.setColor(YELLOW);
   if( counter%8 == 0 ){
     flash ^= 255;
   }
   if( flash ){
-    gb.display.cursorX = 84/2 - 5*3;
-    gb.display.cursorY = 48 - 9;
+    gb.display.cursorX = 80/2 - 5*3;
+    gb.display.cursorY = 64 - 9;
     gb.display.print(F("PRESS \25"));
   }
 

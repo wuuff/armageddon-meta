@@ -45,16 +45,18 @@ void saveHighscore(uint32_t score, char* who){
 }
 
 void drawHighscores(){
-  gb.display.cursorX = 84/2 - 5*4;
+  gb.display.setColor(YELLOW);
+  gb.display.cursorX = 80/2 - 5*4;
   gb.display.cursorY = 5;
   gb.display.print(F("HIGHSCORES"));
 
+  gb.display.setColor(WHITE);
   for( uint8_t entry = 0; entry < NUM_HIGHSCORES; entry++ ){
     gb.display.cursorX = 5;
-    gb.display.cursorY = 12 + 5*entry;
+    gb.display.cursorY = 16 + 6*entry;
     gb.display.print(names[entry]);
     gb.display.print(F(" "));
-    gb.display.cursorX = 84 - 5*6;
+    gb.display.cursorX = 80 - 5*6;
     if( highscores[entry] < 100000 ){
       gb.display.print(0);
     }
