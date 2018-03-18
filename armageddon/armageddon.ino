@@ -299,38 +299,42 @@ void drawMissiles(){
 
 uint8_t explosionColor = 0;
 void drawDetonations(){
-
+  Color ecolor;
   switch( explosionColor ){
     case 0:
-      gb.display.setColor(RED);
+      ecolor = RED;
       break;
     case 1:
-      gb.display.setColor(LIGHTBLUE);
+      ecolor = LIGHTBLUE;
       break;
     case 2:
-      gb.display.setColor(YELLOW);
+      ecolor = YELLOW;
       break;
     case 3:
-      gb.display.setColor(PINK);
+      ecolor = PINK;
       break;
     case 4:
-      gb.display.setColor(LIGHTGREEN);
+      ecolor = LIGHTGREEN;
       break;
     case 5:
-      gb.display.setColor(ORANGE);
+      ecolor = ORANGE;
       break;
     case 6:
-      gb.display.setColor(BEIGE);
+      ecolor = BEIGE;
       break;
   }
 
-  if(counter%2 == 0){
+  if(counter%4 == 0){
     explosionColor++;
     explosionColor %= 7;
   }
   
   for(uint8_t i = 0; i < MAX_PMISSILES; i++){
     if( pDetonations[i][0] <= 84 ){
+      gb.display.setColor(ecolor);
+      //gb.lights.drawPixel(explosionColor%2,explosionColor%4,ecolor);//Too intense
+      gb.lights.drawPixel(0,1,ecolor);
+      gb.lights.drawPixel(1,1,ecolor);
       gb.display.fillCircle(pDetonations[i][0],pDetonations[i][1],pDetonations[i][2]);
     }
   }
@@ -690,6 +694,7 @@ void loop() {
   if(gb.update()){
 
     gb.display.clear();
+    gb.lights.clear();
 
     switch( mode ){
       case MODE_GAME:
