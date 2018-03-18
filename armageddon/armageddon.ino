@@ -1,9 +1,7 @@
-#include <SPI.h>
 //Use for PROGMEM
 #include <avr/pgmspace.h>
-#include <EEPROM.h>
-#include <Gamebuino.h>
-Gamebuino gb;
+//#include <EEPROM.h>
+#include <Gamebuino-Meta.h>
 
 const byte armageddon[] PROGMEM = {64,36,
 B11111111,B11110000,B00000000,B00000000,B00000000,B00000000,B00001111,B11111111,
@@ -153,8 +151,8 @@ float eMissiles[MAX_EMISSILES][4] = {{100,100,100,100},{100,100,100,100},{100,10
 void setup() {
   gb.begin();
   loadHighscores();
-  gb.titleScreen(armageddon);
-  gb.battery.show = false;
+  //gb.titleScreen(armageddon);
+  //gb.battery.show = false;
   gb.pickRandomSeed();
 }
 
@@ -452,9 +450,9 @@ void stepCollision(){
 
 
 void checkMenu(){
-  if( gb.buttons.pressed(BTN_C) ){
-    gb.titleScreen(armageddon);
-    gb.battery.show = false;
+  if( gb.buttons.pressed(BUTTON_MENU) ){
+    //gb.titleScreen(armageddon);
+    //gb.battery.show = false;
   }
 }
 
@@ -488,23 +486,23 @@ void checkLose(){
 
 void stepGame(){
   //Player input
-  if( gb.buttons.pressed(BTN_A) ){
+  if( gb.buttons.pressed(BUTTON_A) ){
     launchMissile(LAUNCHER_ONE);
   }
-  if( gb.buttons.pressed(BTN_B) ){
+  if( gb.buttons.pressed(BUTTON_B) ){
     launchMissile(LAUNCHER_TWO);
   }
   
-  if( gb.buttons.repeat(BTN_LEFT,1) ){
+  if( gb.buttons.repeat(BUTTON_LEFT,1) ){
     targetX = targetX-TARGET_SPEED > 0 ? targetX-TARGET_SPEED : 0;
   }
-  if( gb.buttons.repeat(BTN_RIGHT,1) ){
+  if( gb.buttons.repeat(BUTTON_RIGHT,1) ){
     targetX = targetX+TARGET_SPEED < 84 ? targetX+TARGET_SPEED : 84;
   }
-  if( gb.buttons.repeat(BTN_UP,1) ){
+  if( gb.buttons.repeat(BUTTON_UP,1) ){
     targetY = targetY-TARGET_SPEED > 0 ? targetY-TARGET_SPEED : 0;
   }
-  if( gb.buttons.repeat(BTN_DOWN,1) ){
+  if( gb.buttons.repeat(BUTTON_DOWN,1) ){
     targetY = targetY+TARGET_SPEED < 48 ? targetY+TARGET_SPEED : 48;
   }
 
@@ -611,7 +609,7 @@ void stepDead(){
       }
     }
 
-    if( gb.buttons.pressed(BTN_A) ){
+    if( gb.buttons.pressed(BUTTON_A) ){
       if( isHighscore(score) ){
         char tmp_name[11];
         gb.getDefaultName(tmp_name);
@@ -636,7 +634,7 @@ void stepPregame(){
     gb.display.print(F("PRESS \25"));
   }
 
-  if( gb.buttons.pressed(BTN_A) ){
+  if( gb.buttons.pressed(BUTTON_A) ){
     stage = 255;
     for( uint8_t i = 0; i < 8; i++ ){
       lullCities[i] = 1;
@@ -648,6 +646,8 @@ void stepPregame(){
 
 void loop() {
   if(gb.update()){
+
+    gb.display.clear();
 
     switch( mode ){
       case MODE_GAME:
