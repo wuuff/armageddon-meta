@@ -1,23 +1,47 @@
-// Wave, pitch, duration, arpeggio step duration, arpeggio step size
-const int8_t sounds[][5] = {
-  { 0, 20, 5, 1, 1 }, //Player launch
-  { 0, 25, 5, 1, -1 }, //Enemy launch
-  { 1, 10, 5, 1, -1 }, //Detonating enemy missile
-  { 1, 10, 2, 0, 0 }, //Score pips
-  { 1, 2, 10, 1, -1 }, //A city dies
-  { 0, 20, 14, 3, -1 }, //Lose
+const Gamebuino_Meta::Sound_FX player_launch[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,255,0,-4,56,10},
 };
 
-void initSound(){
-  //gb.sound.command(CMD_VOLUME, 5, 0, 0);
-  //gb.sound.command(CMD_SLIDE, 0, 0, 0);
-}
+const Gamebuino_Meta::Sound_FX enemy_launch[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,255,0,4,56,10},
+};
+
+const Gamebuino_Meta::Sound_FX missile_detonate[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::NOISE,0,255,0,-28,128,10},
+};
+
+const Gamebuino_Meta::Sound_FX sound_pip[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,255,0,0,56,2},
+};
+
+const Gamebuino_Meta::Sound_FX city_detonate[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::NOISE,0,255,0,28,64,14},
+};
+
+const Gamebuino_Meta::Sound_FX sound_lose[] = {
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,255,0,5,50,30},
+};
 
 void playSound(uint8_t i){
-  //gb.sound.command(CMD_VOLUME, 5, 0, 0);
-  //gb.sound.command(CMD_SLIDE, 0, 0, 0);
-  //gb.sound.command(CMD_ARPEGGIO, sounds[i][3], sounds[i][4], 0); 
-  //gb.sound.command(CMD_INSTRUMENT, sounds[i][0], 0, 0);
-  //gb.sound.playNote(sounds[i][1], sounds[i][2], 0);
+  switch( i){
+    case 0:
+      gb.sound.fx(player_launch);
+      break;
+    case 1:
+      gb.sound.fx(enemy_launch);
+      break;
+    case 2:
+      gb.sound.fx(missile_detonate);
+      break;
+    case 3:
+      gb.sound.fx(sound_pip);
+      break;
+    case 4:
+      gb.sound.fx(city_detonate);
+      break;
+    case 5:
+      gb.sound.fx(sound_lose);
+      break;
+  }
 }
 
