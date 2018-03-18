@@ -190,6 +190,7 @@ void nextLull(){
 }
 
 void drawScore(){
+  gb.display.setColor(WHITE);
   gb.display.cursorX = 84/2 - 4*3;
   gb.display.cursorY = 0;
 
@@ -212,6 +213,7 @@ void drawScore(){
 }
 
 void drawTargets(){
+  gb.display.setColor(WHITE);
   gb.display.drawFastHLine(targetX-1,targetY,3);
   gb.display.drawFastVLine(targetX,targetY-1,3);
 
@@ -224,6 +226,7 @@ void drawTargets(){
 }
 
 void drawCities(){
+  gb.display.setColor(YELLOW);
   //uint8_t alldead = 1;
   for(uint8_t i = 0; i < 8; i++){
       if( i == 2 || i == 5 ){
@@ -252,6 +255,7 @@ void drawCities(){
 }
 
 void drawAmmo(){
+  gb.display.setColor(LIGHTBLUE);
   for( uint8_t i = 0; i < 2; i++ ){
     uint8_t xcoord = i == 0 ? 25 : 55;
     uint8_t ycoord = 47;
@@ -271,6 +275,7 @@ void drawAmmo(){
 
 void drawMissiles(){
   //Player Missiles
+  gb.display.setColor(LIGHTBLUE);
   for(uint8_t i = 0; i < MAX_PMISSILES; i++){
     //Check for a valid destination without a current detonation
     if( pDests[i][0] <= 84 && pDetonations[i][0] > 84 ){
@@ -283,6 +288,7 @@ void drawMissiles(){
   }
 
   //Enemy Missiles
+  gb.display.setColor(RED);
   for(uint8_t i = 0; i < MAX_EMISSILES; i++){
     //Check for a valid destination
     if( eDests[i] <= 84 ){
@@ -291,10 +297,41 @@ void drawMissiles(){
   }
 }
 
+uint8_t explosionColor = 0;
 void drawDetonations(){
+
+  switch( explosionColor ){
+    case 0:
+      gb.display.setColor(RED);
+      break;
+    case 1:
+      gb.display.setColor(LIGHTBLUE);
+      break;
+    case 2:
+      gb.display.setColor(YELLOW);
+      break;
+    case 3:
+      gb.display.setColor(PINK);
+      break;
+    case 4:
+      gb.display.setColor(LIGHTGREEN);
+      break;
+    case 5:
+      gb.display.setColor(ORANGE);
+      break;
+    case 6:
+      gb.display.setColor(BEIGE);
+      break;
+  }
+
+  if(counter%2 == 0){
+    explosionColor++;
+    explosionColor %= 7;
+  }
+  
   for(uint8_t i = 0; i < MAX_PMISSILES; i++){
     if( pDetonations[i][0] <= 84 ){
-      gb.display.drawCircle(pDetonations[i][0],pDetonations[i][1],pDetonations[i][2]);
+      gb.display.fillCircle(pDetonations[i][0],pDetonations[i][1],pDetonations[i][2]);
     }
   }
 }
@@ -526,6 +563,7 @@ void stepGame(){
 
 void drawLull(){
   uint8_t cityCount = 0;
+  gb.display.setColor(WHITE);
   gb.display.cursorX = 84/2 - 4*6;
   gb.display.cursorY = 48/2 - 5*3;
   gb.display.print(F("BONUS POINTS"));
@@ -534,17 +572,20 @@ void drawLull(){
   gb.display.cursorY += 5*2;
   gb.display.print(lullMissiles);
 
+  gb.display.setColor(LIGHTBLUE);
   for(uint8_t i = 0; i < lullMissiles; i++){
     gb.display.drawPixel(84/2 - 4*6 + i*2,48/2 - 3);
   }
 
+  gb.display.setColor(WHITE);
   gb.display.cursorX = 84/2 - 4*8;
   gb.display.cursorY += 5*2;
-  for( uint8_t i; i < 8; i++ ){
+  for( uint8_t i = 0; i < 8; i++ ){
     if( lullCities[i] ) cityCount++;
   }
   gb.display.print(cityCount);
 
+  gb.display.setColor(YELLOW);
   for(uint8_t i = 0; i < cityCount; i++){
     gb.display.drawBitmap(84/2 - 4*6 + i*9,48/2+2, city);
   }
@@ -587,6 +628,7 @@ void stepLull(){
 }
 
 void stepDead(){
+  gb.display.setColor(WHITE);
   gb.display.cursorX = 84/2 - 5*3;
   gb.display.cursorY = 48/2 - 5;
   gb.display.print(F("THE END"));
